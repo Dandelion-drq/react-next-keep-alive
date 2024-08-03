@@ -98,7 +98,9 @@ const KeepAliveProvider = (props: KeepAliveProviderProps) => {
   };
 
   // Restore the scroll position of cached page
-  const handleRouteChangeComplete = () => {
+  // The original implementation was to restore scroll position at routeChangeComplete event
+  // But there was some problems in Next.js 13.x, so here changed it to restore scroll position in useEffect
+  useEffect(() => {
     if (isKeptAlive && isEnabled() && keepScroll) {
       window.scrollTo(0, keepAliveCache.current[name]?.scrollPos || 0);
       // Just in case try again in next event loop
@@ -106,7 +108,7 @@ const KeepAliveProvider = (props: KeepAliveProviderProps) => {
         window.scrollTo(0, keepAliveCache.current[name]?.scrollPos || 0);
       }, 0);
     }
-  };
+  }, [router.asPath]);
 
   // Enable/disable loading from cache
   const handleLoadFromCache = (event: any) => {
@@ -146,11 +148,9 @@ const KeepAliveProvider = (props: KeepAliveProviderProps) => {
   // Handle scroll position caching - requires an up-to-date router.asPath
   useEffect(() => {
     router.events.on('routeChangeStart', handleRouteChangeStart);
-    router.events.on('routeChangeComplete', handleRouteChangeComplete);
 
     return () => {
       router.events.off('routeChangeStart', handleRouteChangeStart);
-      router.events.off('routeChangeComplete', handleRouteChangeComplete);
     };
   }, [router.asPath]);
 
