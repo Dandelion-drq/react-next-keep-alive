@@ -10,12 +10,12 @@ const defaultOpts: KeepAliveOptsProps = {
   applyNewProps: false
 };
 
-const withKeepAlive = (
-  Component: ((props?: Object) => JSX.Element),
+const withKeepAlive = <T,>(
+  Component: ((props: T) => JSX.Element),
   name: KeepAliveName,
   opts: KeepAliveOptsProps = defaultOpts
 ) => {
-  const KeepAlive = (props: KeepAliveProps) => (
+  const KeepAlive = (props: KeepAliveProps & T) => (
     // eslint-disable-next-line react/jsx-fragments
     <Fragment>
       <Component {...props} />

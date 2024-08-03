@@ -7,7 +7,11 @@ import { withKeepAlive } from "@/components/react-next-keep-alive";
 
 const inter = Inter({ subsets: ["latin"] });
 
-const Home = () => {
+interface HomeProps {
+  msg: string;
+}
+
+const Home = (props: HomeProps) => {
     return (
         <>
             <Head>
@@ -119,7 +123,13 @@ const Home = () => {
                         </p>
                     </a>
 
-                    <Link href="/page2">Go to Page2</Link>
+                    <div className={styles.grid}>
+                      <p>Msg from props: {props.msg}</p>
+                    </div>
+
+                    <div className={styles.grid}>
+                      <Link href="/page2">Go to Page2</Link>
+                    </div>
                 </div>
             </main>
         </>
@@ -134,10 +144,10 @@ export const getStaticProps = async () => {
 
     return {
         props: {
-            msg: "hello",
+            msg: "This is msg from getStaticProps.",
         },
-        revalidate: 60 * 2, // 2分钟
+        revalidate: 60 * 2,
     };
 };
 
-export default withKeepAlive(Home, "Home");
+export default withKeepAlive<HomeProps>(Home, "Home");
